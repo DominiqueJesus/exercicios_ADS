@@ -174,7 +174,32 @@ void BuscaEmProfundidade(TipoGrafo *Grafo) {
 }
 
 int Ciclo(TipoGrafo *Grafo) {
-  
+  TipoValorVertice x; 
+  TipoValorTempo Tempo;
+  Tempo = 0;
+  int qntRetorno = 0;
+
+  for (x = 0; x <= Grafo->NumVertices - 1; x++) { 
+      Cor[x] = branco; 
+      Antecessor[x] = -1; 
+  }
+
+  for (x = 0; x <= Grafo->NumVertices - 1; x++) {
+      if (Cor[x] == cinza) {
+         int qntRetorno += 1;
+      }
+      if (Cor[x] == branco) {
+        VisitaDfs(x, Grafo, &Tempo, d, t, Cor, Antecessor);
+      }
+   }
+
+   if (qntRetorno > 0) {
+      printf("O grafo G(%d,%d) é cíclico, e possui %d ciclos", Grafo->NumVertices, Grafo->NumArestas, qntRetorno);
+      return 0;
+   }
+   else {
+      printf("O grafo G(%d,%d) é acíclico", Grafo->NumVertices, Grafo->NumArestas);
+   }
 }
 
 /* ============================================================= */
