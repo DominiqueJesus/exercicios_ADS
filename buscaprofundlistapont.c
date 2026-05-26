@@ -1,3 +1,4 @@
+
 /* Ziviani - Projeto de Algoritmos
 7.9 - Grafos usando listas de adjacências
 Busca em Profundidade */
@@ -134,7 +135,7 @@ void VisitaDfs(TipoValorVertice u, TipoGrafo *Grafo, TipoValorTempo* Tempo, Tipo
   TipoValorAresta Peso;
   TipoApontador Aux; 
   TipoValorVertice v;
-  
+
   Cor[u] = cinza;
   (*Tempo)++; 
   d[u] = (*Tempo);
@@ -186,7 +187,7 @@ int Ciclo(TipoGrafo *Grafo) {
 
   for (x = 0; x <= Grafo->NumVertices - 1; x++) {
       if (Cor[x] == cinza) {
-         int qntRetorno += 1;
+         qntRetorno += 1;
       }
       if (Cor[x] == branco) {
         VisitaDfs(x, Grafo, &Tempo, d, t, Cor, Antecessor);
@@ -199,6 +200,7 @@ int Ciclo(TipoGrafo *Grafo) {
    }
    else {
       printf("O grafo G(%d,%d) é acíclico", Grafo->NumVertices, Grafo->NumArestas);
+     return 1;
    }
 }
 
@@ -237,6 +239,13 @@ int main() {
   getchar();
   BuscaEmProfundidade(&Grafo);
   scanf("%*[^\n]");
+
+  Ciclo(&Grafo);
+  scanf("%*[^\n]");
+
   getchar();
+
+
+
   return 0;
 }
