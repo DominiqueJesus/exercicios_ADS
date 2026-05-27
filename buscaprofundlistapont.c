@@ -186,11 +186,13 @@ int Ciclo(TipoGrafo *Grafo) {
   }
 
   for (x = 0; x <= Grafo->NumVertices - 1; x++) {
-      if (Cor[x] == cinza) {
-         qntRetorno += 1;
-      }
+      
       if (Cor[x] == branco) {
         VisitaDfs(x, Grafo, &Tempo, d, t, Cor, Antecessor);
+      }
+      
+      if (Cor[x] == cinza) {
+         qntRetorno += 1;
       }
    }
 
@@ -207,45 +209,45 @@ int Ciclo(TipoGrafo *Grafo) {
 /* ============================================================= */
 
 int main() {  
+    
   /*-- Programa principal --*/
   TipoValorVertice V1, V2;
   TipoValorAresta A;
   TipoItem x;
+  
   int NVertices;
   int NArestas;
+  
   /* -- NumVertices: definido antes da leitura das arestas --*/
   /* -- NumArestas: inicializado com zero e incrementado a --*/
   /* -- cada chamada de InsereAresta                       --*/
-  printf("No. vertices:");
-  scanf("%d%*[^\n]", &NVertices);
-  getchar();
-  printf("No. arestas:");
+  
+  printf("No. vertices: ");
+  scanf("%d", &NVertices);
+  printf("No. arestas: ");
   scanf("%d%*[^\n]", &NArestas);
   getchar();
+  
   Grafo.NumVertices = NVertices;
   Grafo.NumArestas = 0;
   FGVazio(&Grafo);
-  for (int i = 0; i <= NArestas - 1; i++) 
-    { printf("Insere V1 -- V2 -- Aresta:");
+  
+  for (int i = 0; i <= NArestas - 1; i++) { printf("Insere V1 -- V2 -- Aresta: ");
       scanf("%d%d%d%*[^\n]", &V1, &V2, &A);
       getchar();
       Grafo.NumArestas++;
       InsereAresta(&V1, &V2, &A, &Grafo);   /*1 chamada : G direcionado*/
       /*InsereAresta(V2, V1, A, Grafo);*/
       /*2 chamadas: G nao-direcionado*/
-    }
+  }
+    
+  printf("Imprimindo grafo...\n");
   ImprimeGrafo(&Grafo);
-  scanf("%*[^\n]");
-  getchar();
-  BuscaEmProfundidade(&Grafo);
-  scanf("%*[^\n]");
-
+  
   Ciclo(&Grafo);
-  scanf("%*[^\n]");
-
-  getchar();
-
-
+  
+  printf("Executando DFS...\n");
+  BuscaEmProfundidade(&Grafo);
 
   return 0;
 }
