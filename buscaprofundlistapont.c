@@ -1,10 +1,10 @@
-
 /* Ziviani - Projeto de Algoritmos
 7.9 - Grafos usando listas de adjacências
 Busca em Profundidade */
 
 #include<stdlib.h>
 #include<stdio.h>
+#include<locale.h>
 
 #define MAXNUMVERTICES  100
 #define MAXNUMARESTAS   100
@@ -124,43 +124,81 @@ void ImprimeLista(TipoLista Lista) {
 void ImprimeGrafo(TipoGrafo *Grafo) {
   short i;
   for (i = 0; i <= Grafo->NumVertices - 1; i++) 
-    { printf("Vertice%2d:", i);
+    { printf("Vertice%2d: ", i);
       if (!Vazia(Grafo->Adj[i])) ImprimeLista(Grafo->Adj[i]);
       putchar('\n');
     }
 }  /* ImprimeGrafo */
 
-void VisitaDfs(TipoValorVertice u, TipoGrafo *Grafo, TipoValorTempo* Tempo, TipoValorTempo* d, TipoValorTempo* t, TipoCor* Cor, short* Antecessor) { 
+void VisitaDfs(TipoValorVertice u, TipoGrafo *Grafo, TipoValorTempo* Tempo, TipoValorTempo* d, TipoValorTempo* t, TipoCor* Cor, short* Antecessor) {
+    
   char FimListaAdj;
   TipoValorAresta Peso;
   TipoApontador Aux; 
   TipoValorVertice v;
 
   Cor[u] = cinza;
+  
   (*Tempo)++; 
   d[u] = (*Tempo);
-  printf("Visita%2d Tempo descoberta:%2d cinza\n", u, d[u]);
-  printf("Pressione ENTER para continuar\n\n");
+  
+  printf("Visita%2d - Tempo descoberta:%2d (cinza)\n", u, d[u]);
+  printf("Pressione ENTER para continuar...\n");
+  scanf("%*[^\n]");
   getchar();
   
-  if (!ListaAdjVazia(&u, Grafo)) 
-  { Aux = PrimeiroListaAdj(&u, Grafo);
+  if (!ListaAdjVazia(&u, Grafo)) {
+    Aux = PrimeiroListaAdj(&u, Grafo);
     FimListaAdj = FALSE;
-    while (!FimListaAdj) 
-      { ProxAdj(&u, &v, &Peso, &Aux, &FimListaAdj);
-        if (Cor[v] == branco) 
-        { Antecessor[v] = u;
+    
+    while (!FimListaAdj) { 
+        ProxAdj(&u, &v, &Peso, &Aux, &FimListaAdj);
+        if (Cor[v] == branco) {
+          Antecessor[v] = u;
           VisitaDfs(v, Grafo, Tempo, d, t, Cor, Antecessor);
         }
-      }
+    }
   }
   Cor[u] = preto; (*Tempo)++; t[u] = (*Tempo);
-  printf("Visita%2d Tempo termino:%2d preto\n", u, t[u]);
-  printf("Pressione ENTER para continuar\n\n");
+  printf("Visita%2d - Tempo termino:%2d (preto)\n", u, t[u]);
+  printf("Pressione ENTER para continuar...\n");
+  scanf("%*[^\n]");
   getchar();
-} 
+}
 
-void BuscaEmProfundidade(TipoGrafo *Grafo) { 
+int *VisitaDfsCiclo(TipoValorVertice u, TipoGrafo *Grafo, TipoValorTempo* Tempo, TipoValorTempo* d, TipoValorTempo* t, TipoCor* Cor, short* Antecessor, int *qntRetorno) {
+    
+  char FimListaAdj;
+  TipoValorAresta Peso;
+  TipoApontador Aux; 
+  TipoValorVertice v;
+
+  Cor[u] = cinza;
+  
+  (*Tempo)++; 
+  d[u] = (*Tempo);
+  
+  if (!ListaAdjVazia(&u, Grafo)) {
+    Aux = PrimeiroListaAdj(&u, Grafo);
+    FimListaAdj = FALSE;
+    
+    while (!FimListaAdj) { 
+        ProxAdj(&u, &v, &Peso, &Aux, &FimListaAdj);
+        if (Cor[v] == cinza && v != Antecessor[u]) {
+            *qntRetorno += 1;
+        }
+        else if (Cor[v] == branco) {
+          Antecessor[v] = u;
+          VisitaDfsCiclo(v, Grafo, Tempo, d, t, Cor, Antecessor, qntRetorno);
+        }
+    }
+  }
+  Cor[u] = preto; (*Tempo)++; t[u] = (*Tempo);
+
+  return qntRetorno;
+}
+
+void BuscaEmProfundidade(TipoGrafo *Grafo){ 
   TipoValorVertice x; 
   TipoValorTempo Tempo;
   Tempo = 0;
@@ -177,89 +215,94 @@ void BuscaEmProfundidade(TipoGrafo *Grafo) {
   }
 }
 
-int Ciclo(TipoGrafo *Grafo) {
-  TipoValorVertice x; 
-  TipoValorTempo Tempo;
-  Tempo = 0;
-  int qntRetorno = 0;
+/*TipoValorVertice u, TipoGrafo *Grafo, TipoValorTempo* Tempo, TipoValorTempo* d, TipoValorTempo* t, TipoCor* Cor, short* Antecessor*/
 
-  for (x = 0; x <= Grafo->NumVertices - 1; x++) { 
-      Cor[x] = branco; 
-      Antecessor[x] = -1; 
-  }
+int Ciclo(TipoGrafo *Grafo) { 
+    TipoValorVertice x; 
+    TipoValorTempo Tempo;
+    int qntRetorno;
 
-  for (x = 0; x <= Grafo->NumVertices - 1; x++) {
-      
-      if (Cor[x] == branco) {
-        VisitaDfs(x, Grafo, &Tempo, d, t, Cor, Antecessor);
-      }
-      
-      if (Cor[x] == cinza) {
-         qntRetorno += 1;
-      }
-   }
+    qntRetorno = 0;
+    Tempo = 0;
 
-   if (qntRetorno > 0) {
-      printf("O grafo G(%d,%d) é cíclico, e possui %d ciclos", Grafo->NumVertices, Grafo->NumArestas, qntRetorno);
-      return 0;
-   }
-   else {
-      printf("O grafo G(%d,%d) é acíclico", Grafo->NumVertices, Grafo->NumArestas);
-     return 1;
-   }
+    for (x = 0; x <= Grafo->NumVertices - 1; x++) {//? 
+        Cor[x] = branco; 
+        Antecessor[x] = -1; 
+    }
+
+    for (x = 0; x <= Grafo->NumVertices - 1; x++) { 
+        if (Cor[x] == branco) {
+            VisitaDfsCiclo(x, Grafo, &Tempo, d, t, Cor, Antecessor, &qntRetorno);
+        }
+    }
+
+    if (qntRetorno > 0) {
+        printf("O grafo G(%d,%d) é cíclico\n\n", Grafo->NumVertices, Grafo->NumArestas);
+        return 1;
+    }
+    else {
+        printf("O grafo G(%d,%d) é acíclico\n\n", Grafo->NumVertices, Grafo->NumArestas);
+        return 0;
+    }
 }
 
 /* ============================================================= */
 
-int main() {  
-    
+int main() {
+  system("cls");
+  setlocale(LC_ALL,".UTF-8");
+
   /*-- Programa principal --*/
+
+  printf("\n--- TEORIA DOS GRAFOS ---\n\n");
+  
   TipoValorVertice V1, V2;
   TipoValorAresta A;
   TipoItem x;
-  
+
   int NVertices;
   int NArestas;
-  
+
   /* -- NumVertices: definido antes da leitura das arestas --*/
   /* -- NumArestas: inicializado com zero e incrementado a --*/
   /* -- cada chamada de InsereAresta                       --*/
-  
+
   printf("No. vertices: ");
-  scanf("%d", &NVertices);
+  scanf("%d%*[^\n]", &NVertices);
+  getchar();
+
   printf("No. arestas: ");
   scanf("%d%*[^\n]", &NArestas);
   getchar();
-  
+
   Grafo.NumVertices = NVertices;
   Grafo.NumArestas = 0;
   FGVazio(&Grafo);
-  
-  for (int i = 0; i <= NArestas - 1; i++) { printf("Insere V1 -- V2 -- Aresta: ");
-      scanf("%d%d%d%*[^\n]", &V1, &V2, &A);
-      getchar();
-      Grafo.NumArestas++;
-      InsereAresta(&V1, &V2, &A, &Grafo);   /*1 chamada : G direcionado*/
-      /*InsereAresta(V2, V1, A, Grafo);*/
-      /*2 chamadas: G nao-direcionado*/
+
+  for (int i = 0; i <= NArestas - 1; i++) { 
+    printf("Insere V1 -- V2 -- Aresta: ");
+    scanf("%d%d%d%*[^\n]", &V1, &V2, &A);
+    getchar();
+
+    Grafo.NumArestas++;
+    InsereAresta(&V1, &V2, &A, &Grafo);   
+    /*1 chamada : G direcionado*/
+    /*InsereAresta(V2, V1, A, Grafo);*/
+    /*2 chamadas: G nao-direcionado*/
   }
-    
-  printf("\nImprimindo grafo...\n");
+
+  printf("\nImprimindo Grafo:\n\n");
   ImprimeGrafo(&Grafo);
-
+  scanf("%*[^\n]");
   getchar();
 
-  printf("\nPressione ENTER para continuar...\n");
-  
-  printf("\nTipo de grafo:\n");
-  Ciclo(&Grafo);
-
-  getchar();
-
-  printf("\nPressione ENTER para continuar...\n");
-  
-  printf("\nExecutando DFS...\n");
+  printf("\nExecutando DFS:\n\n");
   BuscaEmProfundidade(&Grafo);
 
+  printf("\nBuscando Ciclos:\n\n");
+  Ciclo(&Grafo);
+  scanf("%*[^\n]");
+  getchar();
+  
   return 0;
-}
+} 
