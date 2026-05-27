@@ -95,7 +95,7 @@ void Enfileira(TipoItem Origem, TipoFila *Fila)
 void Desenfileira(TipoFila *Fila, TipoItem *Item)
 { TipoApontador q;
   if (FilaVazia(*Fila)) 
-  { printf(" Erro   fila esta  vazia\n");
+  { printf(" Erro: fila está vazia\n");
     return;
   }
   q = Fila->Frente;
@@ -193,7 +193,7 @@ void VisitaBfs(TipoValorVertice u, TipoGrafo *Grafo,
   Item.Vertice = u;
   Item.Peso = 0;
   Enfileira(Item, &Fila);
-  printf("Visita origem%2d cor: cinza F:", u);
+  printf("Visita origem; %2d - Cor: cinza - F: ", u);
   ImprimeFila(Fila);
   getchar();
   while (!FilaVazia(Fila)) 
@@ -204,8 +204,9 @@ void VisitaBfs(TipoValorVertice u, TipoGrafo *Grafo,
       FimListaAdj = FALSE;
       while (FimListaAdj == FALSE) 
       { ProxAdj(&u, &v, &Peso, &Aux, &FimListaAdj);
-        if (Cor[v] != branco)
+        if (Cor[v] != branco) {
             continue;
+        }
         Cor[v] = cinza;
         Dist[v] = Dist[u] + 1;
         Antecessor[v] = u;
@@ -215,7 +216,7 @@ void VisitaBfs(TipoValorVertice u, TipoGrafo *Grafo,
       }
     }
     Cor[u] = preto;
-    printf("Visita%2d Dist%2d cor: preto F:", u, Dist[u]);
+    printf("Visita: %2d - Dist: %2d - Cor: preto - F: ", u, Dist[u]);
     ImprimeFila(Fila);
     getchar();
   }
@@ -246,7 +247,7 @@ void ImprimeCaminho(TipoValorVertice Origem, TipoValorVertice v, TipoGrafo *Graf
         return; 
     }
     if (Antecessor[v] == -1) {
-        printf ("Nao existe caminho de%d ate %d" , Origem, v);
+        printf ("Não existe caminho de %d até %d" , Origem, v);
     }
     else { 
         ImprimeCaminho(Origem, Antecessor[v], Grafo, Dist, Cor, Antecessor); 
@@ -280,9 +281,7 @@ int main() {
 
     for (int i = 0; i <= NArestas - 1; i++) { 
         printf("\nInsere V1 -- V2 -- Peso: ");
-        scanf("%d%*[^\n]", &V1);
-        scanf("%d%*[^\n]", &V2);
-        scanf("%d%*[^\n]", &Peso);
+        scanf("%d %d %d%*[^\n]", &V1, &V2, &Peso);
         getchar();
 
         Grafo.NumArestas++;
@@ -294,10 +293,10 @@ int main() {
     ImprimeGrafo(&Grafo);
     getchar();
 
-    printf("\nImprimindo Caminhos:\n\n");
+    printf("\nImprimindo Caminhos (digite -1 -1 para sair):\n\n");
     
     do { 
-        printf("Imprime caminho: V1 -- V2: ");
+        printf("\n\nImprime caminho: V1 -- V2: ");
         scanf("%d %d%*[^\n]", &V1, &V2);
 
         getchar();
