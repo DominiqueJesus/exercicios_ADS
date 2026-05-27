@@ -260,6 +260,7 @@ void ImprimeCaminho(TipoValorVertice Origem, TipoValorVertice v, TipoGrafo *Graf
 int main() {
     system("cls");
     setlocale(LC_ALL,".UTF-8");
+    bool validacao;
 
     /*-- Programa principal --*/
 
@@ -269,11 +270,21 @@ int main() {
     /* -- NumArestas: inicializado com zero e incrementando a --*/
     /* -- cada chamada de InsereAresta                       --*/
 
-    printf("No. vertices: ");
-    scanf("%d%*[^\n]", &NVertices);
+    do {
+         printf("No. vertices: ");
+         scanf("%d%*[^\n]", &NVertices);
 
-    printf("No. arestas: ");
-    scanf("%d%*[^\n]", &NArestas);
+          printf("No. arestas: ");
+          scanf("%d%*[^\n]", &NArestas);
+    
+          int maxArestas = (NVertices * (NVertices - 1)) / 2;
+          if(NVertices <= 0 || NArestas < 0 || NArestas > maxArestas) {
+              printf("\nInsira um numero de vertices e arestas válido\n\n");
+              validacao = false;
+          } else {
+              validacao = true;
+          }
+    } while(!validacao);
 
     Grafo.NumVertices = NVertices;
     Grafo.NumArestas = 0;
@@ -292,14 +303,17 @@ int main() {
     printf("\nImprimindo Grafo:\n\n");
     ImprimeGrafo(&Grafo);
     getchar();
+    
+    if(NArestas == 0) {
+    	printf("\nNão há caminhos possíveis\n");
+    	return 1;
+    }
 
     printf("\nImprimindo Caminhos (digite -1 -1 para sair):\n\n");
     
     do { 
         printf("\n\nImprime caminho: V1 -- V2: ");
         scanf("%d %d%*[^\n]", &V1, &V2);
-
-        getchar();
 
         if(V1 == -1 || V2 == -1) {
             break;
