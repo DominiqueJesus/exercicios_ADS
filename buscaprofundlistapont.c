@@ -246,9 +246,17 @@ int main() {
     
   printf("\nImprimindo grafo...\n");
   ImprimeGrafo(&Grafo);
+
+  getchar();
+
+  printf("\nPressione ENTER para continuar...\n");
   
-  printf("\nTipo de grafo...\n");
+  printf("\nTipo de grafo:\n");
   Ciclo(&Grafo);
+
+  getchar();
+
+  printf("\nPressione ENTER para continuar...\n");
   
   printf("\nExecutando DFS...\n");
   BuscaEmProfundidade(&Grafo);
