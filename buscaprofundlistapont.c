@@ -140,7 +140,9 @@ void VisitaDfs(TipoValorVertice u, TipoGrafo *Grafo, TipoValorTempo* Tempo, Tipo
   (*Tempo)++; 
   d[u] = (*Tempo);
   printf("Visita%2d Tempo descoberta:%2d cinza\n", u, d[u]);
+  printf("Pressione ENTER para continuar\n\n");
   getchar();
+  
   if (!ListaAdjVazia(&u, Grafo)) 
   { Aux = PrimeiroListaAdj(&u, Grafo);
     FimListaAdj = FALSE;
@@ -154,6 +156,7 @@ void VisitaDfs(TipoValorVertice u, TipoGrafo *Grafo, TipoValorTempo* Tempo, Tipo
   }
   Cor[u] = preto; (*Tempo)++; t[u] = (*Tempo);
   printf("Visita%2d Tempo termino:%2d preto\n", u, t[u]);
+  printf("Pressione ENTER para continuar\n\n");
   getchar();
 } 
 
@@ -241,12 +244,13 @@ int main() {
       /*2 chamadas: G nao-direcionado*/
   }
     
-  printf("Imprimindo grafo...\n");
+  printf("\nImprimindo grafo...\n");
   ImprimeGrafo(&Grafo);
   
+  printf("\nTipo de grafo...\n");
   Ciclo(&Grafo);
   
-  printf("Executando DFS...\n");
+  printf("\nExecutando DFS...\n");
   BuscaEmProfundidade(&Grafo);
 
   return 0;
