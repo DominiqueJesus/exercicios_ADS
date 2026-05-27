@@ -305,9 +305,10 @@ int main() {
             break;
         }
 
-        BuscaEmLargura(V1, &Grafo);
-
-        ImprimeCaminho(V1, V2, &Grafo, Dist, Cor, Antecessor);
+        else {
+            BuscaEmLargura(V1, &Grafo);
+            ImprimeCaminho(V1, V2, &Grafo, Dist, Cor, Antecessor);
+        }
 
     } while (1);
 
